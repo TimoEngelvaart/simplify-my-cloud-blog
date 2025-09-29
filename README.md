@@ -7,7 +7,7 @@ Sharing insights on **Azure**, **DevOps**, and **automation**.
 
 ## 🔥 Features
 
-- Minimal, clean design (based on [Astro Chiri](https://github.com/the3ash/astro-chiri))
+- Minimal, clean design (based on [TimWitzdam's portfolio template](https://github.com/the3ash/astro-chiri)
 - Markdown/MDX blog support
 - Fully responsive & fast
 - SEO friendly (OpenGraph, Sitemap, RSS)
@@ -87,7 +87,7 @@ You can deploy this blog easily to:
 ## 👀 Contributing
 
 Issues and pull requests are welcome.  
-This project is based on [astro-chiri](https://github.com/the3ash/astro-chiri).
+This project is based on [TimWitzdam's portfolio template](https://github.com/TimWitzdam/astro-minimal-portfolio-template).
 
 ---
 

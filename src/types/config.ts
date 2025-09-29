@@ -59,7 +59,7 @@ export type AboutPageContent = {
       alt: string;
     };
   };
-  work: {
+  work?: {
     description: string;
     items: ResumeItem[];
   };
@@ -75,12 +75,6 @@ export type Project = {
   image: string;
   year: string;
   url: string;
-};
-
-export type ProjectPageContent = {
-  seo: SEOInfo;
-  subtitle: string;
-  projects: Project[];
 };
 
 export type BlogPageContent = {

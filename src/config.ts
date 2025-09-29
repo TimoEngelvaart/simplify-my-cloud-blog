@@ -3,15 +3,20 @@ import type {
   SocialLink,
   Identity,
   AboutPageContent,
-  ProjectPageContent,
   BlogPageContent,
   HomePageContent,
 } from "./types/config";
 
 export const identity: Identity = {
-  name: "Tim Witzdam",
-  logo: "/logo.webp",
-  email: "tim@witzdam.com",
+  name: "Simplify My Cloud",
+  logo: "/logo.png",
+  email: "info@simplifymycloud.com",
+};
+
+export const Logo: Identity = {
+  name: "Simplify My Cloud",
+  logo: "/timo.jpeg",
+  email: "info@simplifymycloud.com",
 };
 
 export const navBarLinks: NavBarLink[] = [
@@ -22,10 +27,6 @@ export const navBarLinks: NavBarLink[] = [
   {
     title: "About",
     url: "/about",
-  },
-  {
-    title: "Projects",
-    url: "/projects",
   },
   {
     title: "Blog",
@@ -42,7 +43,7 @@ export const socialLinks: SocialLink[] = [
   },
   {
     title: "Mail",
-    url: "mailto:tim@witzdam.com",
+    url: "mailto:info@simplifymycloud.com",
     icon: "mdi:email",
   },
 ];
@@ -50,20 +51,16 @@ export const socialLinks: SocialLink[] = [
 // Home (/)
 export const homePageContent: HomePageContent = {
   seo: {
-    title: "Tim Witzdam",
+    title: "Simplify My Cloud",
     description:
-      "Full time student from Germany who loves building cool things using code.",
+      "I'm Timo Engelvaart, a DevOps engineer from the Netherlands who enjoys automating workflows and building smart solutions in the cloud.",
     image: identity.logo,
   },
-  role: "Student & Software Developer",
+  role: "DevOps Engineer",
   description:
-    "I'm Tim Witzdam, a full time student from Germany who also loves building cool things using code.",
+    "I'm Timo Engelvaart, a DevOps engineer from the Netherlands who enjoys automating workflows and building smart solutions in the cloud.",
   socialLinks: socialLinks,
   links: [
-    {
-      title: "My Projects",
-      url: "/projects",
-    },
     {
       title: "About Me",
       url: "/about",
@@ -74,88 +71,38 @@ export const homePageContent: HomePageContent = {
 // About (/about)
 export const aboutPageContent: AboutPageContent = {
   seo: {
-    title: "About | Tim Witzdam",
+    title: "About | Simplify My Cloud",
     description:
-      "Full time student from Germany who loves building cool things using code.",
+      "Azure & Power Platform made simple. Practical guides, scripts, and app blueprints by Timo Engelvaart.",
     image: identity.logo,
   },
-  subtitle: "Some information about myself",
+  subtitle: "Turn complex cloud into simple, shippable solutions.",
   about: {
     description: `
-I'm Tim Witzdam, a full time student from Germany who also loves building cool things using code.
+I'm **Timo Engelvaart**, a DevOps engineer from the Netherlands and the creator of **Simplify My Cloud**.
 <br/><br/>
-Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eaque placeat est architecto tempora voluptatem sit suscipit aspernatur? <br/><br/>
-Facere quibusdam reiciendis, distinctio sunt praesentium error accusantium consectetur nemo vero officia itaque.`, // Markdown is supported
+I work daily with **Azure** and the **Power Platform**—automating real processes for municipalities and teams. Here I share the exact **patterns, scripts, and blueprints** I use so you can copy, adapt, and ship faster.
+<br/><br/>
+**What you'll find here**
+- Step-by-step builds for Azure & Power Platform  
+- Copy-paste snippets (PowerShell, Azure Functions, GitHub Actions)  
+- Opinionated, production-ready setups that stay simple
+`, // Markdown is supported
     image_l: {
       url: "/demo-1.jpg",
-      alt: "Left Picture",
+      alt: "Building apps that solve real problems",
     },
     image_r: {
-      url: "/demo-1.jpg",
-      alt: "Right Picture",
+      url: "/demo-2.jpg",
+      alt: "Automation and cloud workflows",
     },
   },
-  work: {
-    description: `I've worked with a variety of technologies and tools to build cool things. Here are some of the projects I've worked on.`, // Markdown is supported
-    items: [
-      {
-        title: "Software Developer",
-        company: {
-          name: "Freelance",
-          image: "/logo.webp",
-          url: "https://github.com/TimWitzdam",
-        },
-        date: "2021 - Present",
-      },
-      {
-        title: "Software Developer",
-        company: {
-          name: "Freelance",
-          image: "/logo.webp",
-          url: "https://github.com/TimWitzdam",
-        },
-        date: "2019 - 2021",
-      },
-    ],
-  },
   connect: {
-    description: `I'm always interested in meeting new people and learning new things. Feel free to connect with me on any of the following platforms.`, // Markdown is supported
+    description: `Questions or ideas? I love hearing what you're building. Connect with me below.`, // Markdown is supported
     links: socialLinks,
   },
 };
 
-// Projects (/projects)
-export const projectsPageContent: ProjectPageContent = {
-  seo: {
-    title: "Projects | Tim Witzdam",
-    description: "Check out what I've been working on.",
-    image: identity.logo,
-  },
-  subtitle: "Check out what I've been working on.",
-  projects: [
-    {
-      title: "Project 1",
-      description: "Project 1 Description",
-      image: "/demo-2.jpg",
-      year: "2024",
-      url: "https://github.com/TimWitzdam",
-    },
-    {
-      title: "Project 1",
-      description: "Project 1 Description",
-      image: "/demo-2.jpg",
-      year: "2024",
-      url: "https://github.com/TimWitzdam",
-    },
-    {
-      title: "Project 1",
-      description: "Project 1 Description",
-      image: "/demo-2.jpg",
-      year: "2024",
-      url: "https://github.com/TimWitzdam",
-    },
-  ],
-};
 
 // Blog (/blog)
 export const blogPageContent: BlogPageContent = {

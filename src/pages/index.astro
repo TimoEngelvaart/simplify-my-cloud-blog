@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
-import { homePageContent, identity } from "../config";
+import { homePageContent, Logo } from "../config";
 import SocialLink from "../components/SocialLink.astro";
 import Link from "../components/Link.astro";
 import { getCollection } from "astro:content";
@@ -17,12 +17,12 @@ posts.splice(2)
 
 <Layout seo={homePageContent.seo}>
   <section class="mt-10 max-w-2xl mx-auto px-6">
-    <h1 class="font-bold text-3xl mb-1">{identity.name}</h1>
+    <h1 class="font-bold text-3xl mb-1">{Logo.name}</h1>
     <p class="opacity-60 mb-10">{homePageContent.role}</p>
     <div class="flex flex-col min-[520px]:flex-row gap-6 mb-8">
       <Image
-        src={identity.logo}
-        alt={identity.name}
+        src={Logo.logo}
+        alt={Logo.name}
         width={100}
         height={100}
         class="rounded-full"
@@ -40,7 +40,7 @@ posts.splice(2)
         }
       </div>
     </div>
-    <p class="max-w-md mb-8">
+    <p>
       {homePageContent.description}
     </p>
     <div class="flex items-center gap-4 group w-fit">

@@ -8,18 +8,15 @@ import { identity } from "../../config";
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
   return posts.map((p) => {
-    const clean = p.id.replace(/\.(md|mdx)$/, ""); 
-    return { params: { id: clean } };
+    return { params: { id: p.id } }; // Use p.id directly, no cleaning needed
   });
 }
 
 // Runtime for each page:
 const { id } = Astro.params;
 
-// Try to resolve by id + extension
-const entry =
-  (await getEntry("posts", `${id}.md`)) ??
-  (await getEntry("posts", `${id}.mdx`));
+// Fetch directly by id (no extension needed)
+const entry = await getEntry("posts", id);
 
 if (!entry) {
   return Astro.redirect("/blog");

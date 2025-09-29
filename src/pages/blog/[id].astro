@@ -1,17 +1,31 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { getEntry, render } from "astro:content";
+import { getCollection, getEntry, render } from "astro:content";
 import { Image } from "astro:assets";
 import { identity } from "../../config";
 
+// Tell Astro which /blog/:id pages to emit
+export async function getStaticPaths() {
+  const posts = await getCollection("posts");
+  return posts.map((p) => {
+    const clean = p.id.replace(/\.(md|mdx)$/, ""); 
+    return { params: { id: clean } };
+  });
+}
+
+// Runtime for each page:
 const { id } = Astro.params;
-const entry = await getEntry("posts", id as string);
+
+// Try to resolve by id + extension
+const entry =
+  (await getEntry("posts", `${id}.md`)) ??
+  (await getEntry("posts", `${id}.mdx`));
 
 if (!entry) {
   return Astro.redirect("/blog");
 }
 
-const { Content,  remarkPluginFrontmatter} = await render(entry);
+const { Content, remarkPluginFrontmatter } = await render(entry);
 ---
 
 <Layout
@@ -48,7 +62,7 @@ const { Content,  remarkPluginFrontmatter} = await render(entry);
       alt={entry.data.image.alt}
       width={800}
       height={300}
-      class="apsect-video w-full rounded-xl mb-10"
+      class="aspect-video w-full rounded-xl mb-10"
     />
     <article
       class="prose prose-invert prose-a:text-blue-300 prose-a:underline-offset-4 prose-headings:mb-2 prose-p:text-[#b3b3b3]"

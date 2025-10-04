@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
-import { navBarLinks, identity } from "../config";
+import { navBarLinks, identity, socialLinks } from "../config";
 import type { SEOInfo } from "../types/config";
 
 interface Props {
@@ -70,26 +70,26 @@ const { seo } = Astro.props;
     </script>
   </head>
   <body>
-    <header>
-      <div
-        class="px-6 py-6 max-w-2xl mx-auto flex items-center justify-between"
-      >
-        <a href="/">
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-primary-transparent border-b border-gray-200 dark:border-gray-800">
+      <div class="px-6 py-4 max-w-2xl mx-auto flex items-center justify-between">
+        <a href="/" class="flex items-center gap-3 group">
           <Image
             src={identity.logo}
             alt={"Logo"}
-            width={50}
-            height={50}
-            class="w-[50px] h-[50px] object-cover rounded-full"
+            width={42}
+            height={42}
+            class="w-[42px] h-[42px] object-cover rounded-full ring-2 ring-transparent group-hover:ring-gray-300 dark:group-hover:ring-gray-700 transition-all"
           />
+          <span class="hidden sm:block font-semibold opacity-80 group-hover:opacity-100 transition-opacity">{identity.name}</span>
         </a>
-        <nav class="ml-auto mr-6 sm:m-0">
-          <ul class="hidden sm:flex sm:items-center sm:gap-2">
+
+        <nav class="ml-auto mr-4 sm:mr-6">
+          <ul class="hidden sm:flex sm:items-center sm:gap-1">
             {
               navBarLinks.map((link) => (
                 <li>
                   <a
-                    class="group px-4 py-2 rounded-lg hover:bg-secondary opacity-60 hover:opacity-100 transition-all"
+                    class="px-4 py-2 rounded-lg hover:bg-secondary opacity-60 hover:opacity-100 transition-all font-medium text-sm"
                     href={link.url}
                     target={link.external ? "_blank" : "_self"}
                   >
@@ -102,19 +102,19 @@ const { seo } = Astro.props;
           <div class="relative sm:hidden">
             <button
               id="link-menu-button"
-              class="relative font-medium opacity-60 p-4"
+              class="px-3 py-2 rounded-lg hover:bg-secondary opacity-60 hover:opacity-100 transition-all font-medium text-sm"
               >Menu <span id="open-indicator">+</span></button
             >
             <div
               id="link-menu"
-              class="absolute p-2 right-0 bg-secondary rounded-lg w-44 transition-opacity ease-in-out duration-300 opacity-0 z-40"
+              class="absolute p-2 right-0 mt-2 bg-primary-solid rounded-xl w-44 shadow-lg border border-gray-200 dark:border-gray-800 transition-opacity ease-in-out duration-300 opacity-0 pointer-events-none z-40"
             >
               <ul>
                 {
                   navBarLinks.map((link) => (
                     <li>
                       <a
-                        class="block pl-4 py-3"
+                        class="block px-4 py-3 rounded-lg hover:bg-secondary transition-all opacity-80 hover:opacity-100"
                         href={link.url}
                         target={link.external ? "_blank" : "_self"}
                       >
@@ -127,17 +127,18 @@ const { seo } = Astro.props;
             </div>
           </div>
         </nav>
-        <div class="flex items-center gap-2">
+
+        <div class="flex items-center gap-1">
           <button
             id="theme-toggle"
-            class="p-2 opacity-60 hover:opacity-100 transition-opacity"
+            class="p-2.5 rounded-lg hover:bg-secondary opacity-60 hover:opacity-100 transition-all"
             aria-label="Toggle theme"
           >
             <Icon name="mdi:theme-light-dark" width={20} height={20} />
           </button>
           <a
             href=`mailto:${identity.email}`
-            class="block p-2 opacity-60 hover:opacity-100 transition-opacity"
+            class="p-2.5 rounded-lg hover:bg-secondary opacity-60 hover:opacity-100 transition-all"
             aria-label="Email"
           >
             <Icon name="mdi:email" width={20} height={20} />
@@ -148,7 +149,40 @@ const { seo } = Astro.props;
     <main class="mb-32">
       <slot />
     </main>
-    <footer></footer>
+    <footer class="mt-24 border-t border-gray-200 dark:border-gray-800">
+      <div class="max-w-2xl mx-auto px-6 py-8">
+        <div class="text-center space-y-4">
+          <div class="flex justify-center items-center gap-6">
+            {socialLinks.map((link) => (
+              <a
+                href={link.url}
+                target={link.external ? "_blank" : "_self"}
+                class="opacity-60 hover:opacity-100 transition-opacity"
+                aria-label={link.title}
+              >
+                <Icon name={link.icon} width={22} height={22} />
+              </a>
+            ))}
+          </div>
+
+          <nav class="flex justify-center gap-6">
+            {navBarLinks.map((link) => (
+              <a
+                href={link.url}
+                target={link.external ? "_blank" : "_self"}
+                class="text-sm opacity-50 hover:opacity-100 transition-opacity"
+              >
+                {link.title}
+              </a>
+            ))}
+          </nav>
+
+          <p class="text-sm opacity-50">
+            © {new Date().getFullYear()} {identity.name}. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>
 
@@ -216,5 +250,46 @@ const { seo } = Astro.props;
 
   .post:hover .hover-underline {
     text-decoration-color: var(--text-primary);
+  }
+
+  .border-gray-200 {
+    border-color: #e5e7eb;
+  }
+
+  [data-theme="dark"] .dark\:border-gray-800 {
+    border-color: #1f2937;
+  }
+
+  .bg-primary-transparent {
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+
+  [data-theme="dark"] .bg-primary-transparent {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+
+  .bg-primary-solid {
+    background-color: #ffffff;
+  }
+
+  [data-theme="dark"] .bg-primary-solid {
+    background-color: #000000;
+  }
+
+  .ring-gray-300 {
+    --tw-ring-color: #d1d5db;
+    box-shadow: 0 0 0 2px var(--tw-ring-color);
+  }
+
+  [data-theme="dark"] .dark\:group-hover\:ring-gray-700:hover {
+    --tw-ring-color: #374151;
+  }
+
+  .shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  [data-theme="dark"] .shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
   }
 </style>

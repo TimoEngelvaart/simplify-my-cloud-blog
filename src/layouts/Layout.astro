@@ -12,37 +12,40 @@ const { seo } = Astro.props;
 ---
 
 <script>
-  const linkMenuButton = document.getElementById(
-    "link-menu-button"
-  ) as HTMLButtonElement;
+  // Theme toggle functionality
+  const themeToggle = document.getElementById("theme-toggle") as HTMLButtonElement;
+  const html = document.documentElement;
+
+  // Check for saved theme preference or default to dark
+  const currentTheme = localStorage.getItem("theme") || "dark";
+  html.setAttribute("data-theme", currentTheme);
+
+  themeToggle?.addEventListener("click", () => {
+    const theme = html.getAttribute("data-theme");
+    const newTheme = theme === "dark" ? "light" : "dark";
+    html.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+  });
+
+  // Menu functionality
+  const linkMenuButton = document.getElementById("link-menu-button") as HTMLButtonElement;
   const linkMenu = document.getElementById("link-menu") as HTMLDivElement;
-  const openIndicator = document.getElementById(
-    "open-indicator"
-  ) as HTMLSpanElement;
+  const openIndicator = document.getElementById("open-indicator") as HTMLSpanElement;
+
+  const toggleMenu = (show: boolean) => {
+    linkMenu.classList.toggle("pointer-events-none", !show);
+    linkMenu.classList.toggle("opacity-0", !show);
+    openIndicator.innerText = show ? "-" : "+";
+  };
 
   linkMenuButton.addEventListener("click", () => {
-    if (linkMenu.classList.contains("opacity-0")) {
-      linkMenu.classList.remove("pointer-events-none");
-      linkMenu.classList.remove("opacity-0");
-      openIndicator.innerText = "-";
-    } else {
-      linkMenu.classList.add("pointer-events-none");
-      linkMenu.classList.add("opacity-0");
-      openIndicator.innerText = "+";
-    }
+    toggleMenu(linkMenu.classList.contains("opacity-0"));
   });
 
   document.addEventListener("click", (event) => {
-    const isLinkMenuButtonClicked =
-      event.target === linkMenuButton ||
-      linkMenuButton.contains(event.target as Node);
-    const isLinkMenuClicked =
-      event.target === linkMenu || linkMenu.contains(event.target as Node);
-
-    if (!isLinkMenuButtonClicked && !isLinkMenuClicked) {
-      linkMenu.classList.add("pointer-events-none");
-      linkMenu.classList.add("opacity-0");
-      openIndicator.innerText = "+";
+    const target = event.target as Node;
+    if (!linkMenuButton.contains(target) && !linkMenu.contains(target)) {
+      toggleMenu(false);
     }
   });
 </script>
@@ -50,14 +53,21 @@ const { seo } = Astro.props;
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <meta name="generator" content={Astro.generator} />
     <title>{seo.title}</title>
     <meta name="description" content={seo.description} />
     <meta property="og:title" content={seo.title} />
     <meta property="og:description" content={seo.description} />
     <meta property="og:image" content={seo.image} />
+    <script is:inline>
+      // Prevent flash of unstyled content
+      const theme = localStorage.getItem("theme") || "dark";
+      document.documentElement.setAttribute("data-theme", theme);
+    </script>
   </head>
   <body>
     <header>
@@ -79,7 +89,7 @@ const { seo } = Astro.props;
               navBarLinks.map((link) => (
                 <li>
                   <a
-                    class="group px-4 py-2 rounded-lg hover:bg-gray-bg opacity-60 hover:opacity-100 transition-all"
+                    class="group px-4 py-2 rounded-lg hover:bg-secondary opacity-60 hover:opacity-100 transition-all"
                     href={link.url}
                     target={link.external ? "_blank" : "_self"}
                   >
@@ -97,7 +107,7 @@ const { seo } = Astro.props;
             >
             <div
               id="link-menu"
-              class="absolute p-2 right-0 bg-gray-bg rounded-lg w-44 transition-opacity ease-in-out duration-300 opacity-0 z-40"
+              class="absolute p-2 right-0 bg-secondary rounded-lg w-44 transition-opacity ease-in-out duration-300 opacity-0 z-40"
             >
               <ul>
                 {
@@ -117,7 +127,14 @@ const { seo } = Astro.props;
             </div>
           </div>
         </nav>
-        <div>
+        <div class="flex items-center gap-2">
+          <button
+            id="theme-toggle"
+            class="p-2 opacity-60 hover:opacity-100 transition-opacity"
+            aria-label="Toggle theme"
+          >
+            <Icon name="mdi:theme-light-dark" width={20} height={20} />
+          </button>
           <a
             href=`mailto:${identity.email}`
             class="block p-2 opacity-60 hover:opacity-100 transition-opacity"
@@ -136,11 +153,20 @@ const { seo } = Astro.props;
 </html>
 
 <style is:global>
-  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
-  html {
-    font-family: "Inter", sans-serif;
-    background: #000000;
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --text-primary: #000000;
+    --text-secondary: #666666;
+  }
+
+  [data-theme="dark"] {
+    --bg-primary: #000000;
+    --bg-secondary: #1a1a1a;
+    --text-primary: #ffffff;
+    --text-secondary: #999999;
   }
 
   * {
@@ -148,7 +174,26 @@ const { seo } = Astro.props;
     padding: 0;
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
-    color: white;
+  }
+
+  html {
+    font-family: "Inter", sans-serif;
+    background: var(--bg-primary);
+  }
+
+  body,
+  html,
+  .bg-secondary {
+    transition: background-color 0.3s ease;
+  }
+
+  *:not(script):not(style) {
+    color: var(--text-primary);
+    transition: color 0.3s ease;
+  }
+
+  .bg-secondary {
+    background-color: var(--bg-secondary);
   }
 
   code {
@@ -170,6 +215,6 @@ const { seo } = Astro.props;
   }
 
   .post:hover .hover-underline {
-    text-decoration-color: rgba(255, 255, 255, 1);
+    text-decoration-color: var(--text-primary);
   }
 </style>

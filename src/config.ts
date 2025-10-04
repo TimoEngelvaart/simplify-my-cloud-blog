@@ -107,9 +107,9 @@ I work daily with **Azure** and the **Power Platform**—automating real process
 // Blog (/blog)
 export const blogPageContent: BlogPageContent = {
   seo: {
-    title: "Blog | Tim Witzdam",
-    description: "Thoughts, stories and ideas.",
+    title: "Blog | Simplify My Cloud",
+    description: "Insights, guides, and stories from Simplify My Cloud by Timo Engelvaart.",
     image: identity.logo,
   },
-  subtitle: "Thoughts, stories and ideas.",
+  subtitle: "Insights, guides, and stories from Simplify My Cloud.",
 };

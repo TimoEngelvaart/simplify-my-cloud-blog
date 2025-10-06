@@ -68,6 +68,14 @@ const { seo } = Astro.props;
       const theme = localStorage.getItem("theme") || "dark";
       document.documentElement.setAttribute("data-theme", theme);
     </script>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0KL7Y7MZKN"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-0KL7Y7MZKN');
+    </script>
   </head>
   <body>
     <header class="sticky top-0 z-50 backdrop-blur-md bg-primary-transparent border-b border-gray-200 dark:border-gray-800">

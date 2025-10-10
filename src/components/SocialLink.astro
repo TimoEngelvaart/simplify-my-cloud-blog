@@ -9,10 +9,10 @@ const { title, url, icon, external } = Astro.props;
 
 <a
   href={url}
-  class="flex items-center gap-3 p-2 rounded-lg bg-gradient-to-r from-primary-500/5 to-accent-500/5 hover:from-primary-500/10 hover:to-accent-500/10 opacity-80 hover:opacity-100 transition-all hover:scale-105 group border border-transparent hover:border-primary-500/20"
+  class="flex items-center gap-3 p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all group"
   target={external ? "_blank" : "_self"}
 >
-  <Icon name={icon} width={22} height={22} class="text-primary-600 dark:text-primary-400" />
+  <Icon name={icon} width={20} height={20} />
   <div>
     <p class="text-sm font-medium">{title}</p>
   </div>

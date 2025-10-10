@@ -17,27 +17,30 @@ posts.splice(2)
 
 <Layout seo={homePageContent.seo}>
   <!-- Hero Section -->
-  <section class="max-w-4xl mx-auto px-6 pt-24 pb-20">
+  <section class="max-w-4xl mx-auto px-6 pt-24 pb-20 animate-fade-in">
     <div class="flex flex-col lg:flex-row items-center gap-16">
       <!-- Profile Image -->
-      <div class="flex-shrink-0">
-        <Image
-          src={Logo.logo}
-          alt={Logo.name}
-          width={180}
-          height={180}
-          class="rounded-full w-[180px] h-[180px] object-cover ring-1 ring-gray-200 dark:ring-gray-800"
-        />
+      <div class="flex-shrink-0 animate-scale-in">
+        <div class="relative">
+          <div class="absolute inset-0 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full blur-2xl opacity-30 animate-pulse"></div>
+          <Image
+            src={Logo.logo}
+            alt={Logo.name}
+            width={180}
+            height={180}
+            class="rounded-full w-[180px] h-[180px] object-cover ring-4 ring-primary-400/50 dark:ring-primary-600/50 shadow-2xl relative hover:scale-105 transition-transform duration-300"
+          />
+        </div>
       </div>
 
       <!-- Hero Content -->
-      <div class="flex-1 text-center lg:text-left max-w-2xl">
+      <div class="flex-1 text-center lg:text-left max-w-2xl animate-slide-up">
         <div class="inline-block mb-3">
-          <span class="text-sm font-medium opacity-60">
+          <span class="text-sm font-medium px-4 py-1.5 rounded-full bg-gradient-to-r from-primary-500/10 to-accent-500/10 border border-primary-500/20 dark:border-primary-600/20">
             {homePageContent.role}
           </span>
         </div>
-        <h1 class="font-bold text-5xl md:text-6xl mb-5 leading-tight">
+        <h1 class="font-bold text-5xl md:text-6xl mb-5 leading-tight bg-gradient-to-r from-primary-600 via-accent-600 to-primary-600 bg-clip-text text-transparent animate-gradient">
           {Logo.name}
         </h1>
         <p class="text-lg opacity-70 mb-8 leading-relaxed">
@@ -47,10 +50,11 @@ posts.splice(2)
         <!-- CTA Buttons -->
         <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 mb-8">
           {
-            homePageContent.links.map((link) => (
+            homePageContent.links.map((link, index) => (
               <a
                 href={link.url}
-                class="px-5 py-2.5 rounded-lg bg-black dark:bg-white text-white dark:text-black font-medium text-sm hover:opacity-90 transition-opacity"
+                class="px-6 py-3 rounded-lg bg-gradient-to-r from-primary-600 to-accent-600 text-white font-medium text-sm hover:shadow-glow-lg hover:scale-105 transition-all duration-300 animate-slide-up"
+                style={`animation-delay: ${(index + 1) * 100}ms;`}
               >
                 {link.title}
               </a>
@@ -58,14 +62,15 @@ posts.splice(2)
           }
           <a
             href="/blog"
-            class="px-5 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 font-medium text-sm hover:bg-secondary transition-colors"
+            class="px-6 py-3 rounded-lg border-2 border-primary-500/30 dark:border-primary-600/30 font-medium text-sm hover:bg-gradient-to-r hover:from-primary-500/10 hover:to-accent-500/10 hover:border-primary-500/50 transition-all duration-300 hover:scale-105 animate-slide-up"
+            style="animation-delay: 200ms;"
           >
             Read Blog
           </a>
         </div>
 
         <!-- Social Links -->
-        <div class="flex items-center justify-center lg:justify-start gap-4">
+        <div class="flex items-center justify-center lg:justify-start gap-4 animate-slide-up" style="animation-delay: 300ms;">
           {
             homePageContent.socialLinks.map((link) => (
               <SocialLink
@@ -82,15 +87,15 @@ posts.splice(2)
   </section>
 
   <!-- Latest Posts Section -->
-  <section class="max-w-4xl mx-auto px-6 py-20 border-t border-gray-200 dark:border-gray-800">
-    <div class="flex items-center justify-between mb-10">
+  <section class="max-w-4xl mx-auto px-6 py-20 border-t border-gray-200/50 dark:border-gray-800/50">
+    <div class="flex items-center justify-between mb-10 animate-slide-up">
       <div>
-        <h2 class="font-bold text-2xl mb-1">Latest Posts</h2>
+        <h2 class="font-bold text-2xl mb-1 bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">Latest Posts</h2>
         <p class="text-sm opacity-60">Recent insights and guides</p>
       </div>
       <a
         href="/blog"
-        class="hidden sm:inline-flex items-center gap-1 text-sm font-medium opacity-60 hover:opacity-100 transition-opacity"
+        class="hidden sm:inline-flex items-center gap-1 text-sm font-medium opacity-60 hover:opacity-100 transition-all hover:gap-2"
       >
         View all →
       </a>
@@ -98,25 +103,27 @@ posts.splice(2)
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       {
-        posts.map((post) => (
+        posts.map((post, index) => (
           <a
             href={`/blog/${post.id}`}
-            class="group block border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden hover:border-gray-300 dark:hover:border-gray-700 transition-colors"
+            class="group block border border-gray-200/50 dark:border-gray-800/50 rounded-xl overflow-hidden hover:border-primary-500/50 dark:hover:border-primary-600/50 transition-all duration-300 hover:shadow-glow hover:-translate-y-1 animate-scale-in"
+            style={`animation-delay: ${(index + 1) * 150}ms;`}
           >
             <div class="relative overflow-hidden aspect-video bg-secondary">
+              <div class="absolute inset-0 bg-gradient-to-tr from-primary-500/20 to-accent-500/20 opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
               <Image
                 src={post.data.image.url}
                 alt={post.data.image.alt}
                 width={600}
                 height={400}
-                class="w-full h-full object-cover"
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
               />
             </div>
-            <div class="p-5">
-              <p class="text-xs opacity-50 mb-2">
+            <div class="p-5 bg-gradient-to-br from-transparent to-primary-500/5">
+              <p class="text-xs opacity-50 mb-2 font-medium">
                 {post.data.pubDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
               </p>
-              <h3 class="font-semibold text-lg mb-2 group-hover:opacity-70 transition-opacity">{post.data.title}</h3>
+              <h3 class="font-semibold text-lg mb-2 group-hover:bg-gradient-to-r group-hover:from-primary-600 group-hover:to-accent-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">{post.data.title}</h3>
               <p class="text-sm opacity-60 leading-relaxed line-clamp-2">{post.data.description}</p>
             </div>
           </a>

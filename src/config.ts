@@ -9,13 +9,13 @@ import type {
 
 export const identity: Identity = {
   name: "Simplify My Cloud",
-  logo: "/logo.png",
+  logo: "/logo.svg",
   email: "info@simplifymycloud.com",
 };
 
 export const Logo: Identity = {
   name: "Simplify My Cloud",
-  logo: "/timo.jpeg",
+  logo: "/timo.jpg",
   email: "info@simplifymycloud.com",
 };
 

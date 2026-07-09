@@ -2,27 +2,21 @@
 import Layout from "../../layouts/Layout.astro";
 import { getCollection, getEntry, render } from "astro:content";
 import { Image } from "astro:assets";
-import { identity } from "../../config";
+import { identity, author } from "../../config";
 
-// Tell Astro which /blog/:id pages to emit
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
-  return posts.map((p) => {
-    return { params: { id: p.id } }; // Use p.id directly, no cleaning needed
-  });
+  return posts.map((p) => ({ params: { id: p.id } }));
 }
 
-// Runtime for each page:
 const { id } = Astro.params;
+if (!id) return Astro.redirect("/blog");
 
-// Fetch directly by id (no extension needed)
 const entry = await getEntry("posts", id);
-
-if (!entry) {
-  return Astro.redirect("/blog");
-}
+if (!entry) return Astro.redirect("/blog");
 
 const { Content, remarkPluginFrontmatter } = await render(entry);
+const readingTime: string | undefined = remarkPluginFrontmatter.minutesRead;
 ---
 
 <Layout
@@ -32,73 +26,291 @@ const { Content, remarkPluginFrontmatter } = await render(entry);
     image: entry.data.image.url,
   }}
 >
-  <article class="max-w-4xl mx-auto px-6 pt-16 pb-24">
-    <!-- Back Link -->
-    <a href="/blog" class="inline-flex items-center gap-1 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors mb-8">
-      ← Back
-    </a>
+  <div class="max-w-3xl mx-auto px-6 pt-12 pb-28">
 
-    <!-- Header Section -->
-    <header class="mb-10">
-      <h1 class="font-bold text-4xl mb-4 leading-tight text-gray-900 dark:text-gray-100">{entry.data.title}</h1>
-      <p class="text-lg text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
-        {entry.data.description}
-      </p>
+    <!-- Back -->
+    <a href="/blog" class="back-link">← All posts</a>
 
-      <!-- Meta Info -->
-      <div class="flex items-center gap-4">
+    <!-- Header -->
+    <header class="article-header">
+      {(entry.data.tags ?? []).length > 0 && (
+        <div class="tags">
+          {(entry.data.tags ?? []).slice(0, 3).map(tag => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      )}
+
+      <h1 class="article-title">{entry.data.title}</h1>
+
+      <p class="article-desc">{entry.data.description}</p>
+
+      <!-- Byline -->
+      <div class="byline">
         <Image
-          src={identity.logo}
-          alt={identity.name}
-          width={40}
-          height={40}
-          class="w-[40px] h-[40px] object-cover rounded-full ring-1 ring-gray-200 dark:ring-gray-800"
+          src={author.avatar}
+          alt={author.name}
+          width={28}
+          height={28}
+          class="byline-avatar"
         />
-        <div>
-          <p class="font-medium text-sm text-gray-900 dark:text-gray-100">{identity.name}</p>
-          <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-500">
-            <time datetime={entry.data.pubDate.toISOString()}>
-              {entry.data.pubDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-            </time>
-            <span>·</span>
-            <span>{remarkPluginFrontmatter.minutesRead}</span>
-          </div>
+        <div class="byline-text">
+          <span class="byline-name">{author.name}</span>
+          <span class="byline-sep">·</span>
+          <time class="byline-meta" datetime={entry.data.pubDate.toISOString()}>
+            {entry.data.pubDate.toLocaleDateString("en-US", {
+              month: "long", day: "numeric", year: "numeric",
+            })}
+          </time>
+          {readingTime && (
+            <>
+              <span class="byline-sep">·</span>
+              <span class="byline-meta">{readingTime}</span>
+            </>
+          )}
         </div>
       </div>
     </header>
 
-    <!-- Featured Image -->
-    <div class="mb-12 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800">
-      <Image
-        src={entry.data.image.url}
-        alt={entry.data.image.alt}
-        width={1200}
-        height={600}
-        class="aspect-video w-full object-cover"
-      />
-    </div>
+    <div class="divider" />
 
-    <!-- Article Content -->
-    <div class="prose prose-lg dark:prose-invert max-w-none
+    <!-- YouTube embed -->
+    {entry.data.youtubeId && (
+      <div class="embed-wrap">
+        <div class="embed-ratio">
+          <iframe
+            src={`https://www.youtube.com/embed/${entry.data.youtubeId}`}
+            title={entry.data.title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            loading="lazy"
+            class="embed-frame"
+          ></iframe>
+        </div>
+        <p class="embed-caption">
+          Also on{" "}
+          <a
+            href={`https://www.youtube.com/watch?v=${entry.data.youtubeId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            YouTube ↗
+          </a>
+        </p>
+      </div>
+    )}
+
+    <!-- Featured image (only when no video) -->
+    {!entry.data.youtubeId && (
+      <div class="featured-img-wrap">
+        <Image
+          src={entry.data.image.url}
+          alt={entry.data.image.alt}
+          width={1200}
+          height={630}
+          class="featured-img"
+        />
+      </div>
+    )}
+
+    <!-- Content -->
+    <article class="prose prose-base max-w-none
       prose-headings:font-bold prose-headings:tracking-tight
       prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4
       prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
-      prose-p:leading-relaxed prose-p:mb-5 prose-p:opacity-80
-      prose-a:font-medium prose-a:no-underline prose-a:opacity-100 hover:prose-a:underline prose-a:underline-offset-2
-      prose-strong:font-semibold prose-strong:opacity-100
-      prose-code:text-sm prose-code:font-mono prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:bg-secondary prose-code:opacity-100
-      prose-pre:bg-secondary prose-pre:border prose-pre:border-gray-200 dark:prose-pre:border-gray-800 prose-pre:rounded-lg prose-pre:text-sm
-      prose-img:rounded-lg prose-img:border prose-img:border-gray-200 dark:prose-img:border-gray-800
-      prose-blockquote:border-l-2 prose-blockquote:border-gray-300 dark:prose-blockquote:border-gray-700 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:opacity-70
-      prose-ul:my-5 prose-ol:my-5 prose-li:my-1">
+      prose-p:leading-relaxed prose-p:mb-5
+      prose-a:no-underline hover:prose-a:underline
+      prose-code:text-sm
+      prose-pre:rounded-lg
+      prose-blockquote:pl-4
+      prose-ul:my-5 prose-ol:my-5 prose-li:my-1
+      prose-hr:my-10">
       <Content />
-    </div>
+    </article>
 
-    <!-- Footer Navigation -->
-    <footer class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800">
-      <a href="/blog" class="inline-flex items-center gap-1 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
-        ← All posts
-      </a>
+    <!-- Article footer -->
+    <footer class="article-footer">
+      <a href="/blog" class="back-link" style="margin-bottom:0">← All posts</a>
+      {entry.data.youtubeId && (
+        <a
+          href={`https://www.youtube.com/watch?v=${entry.data.youtubeId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="yt-btn"
+        >
+          <span class="yt-dot" />
+          Watch on YouTube
+        </a>
+      )}
     </footer>
-  </article>
+
+  </div>
 </Layout>
+
+<style>
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--text-4);
+    margin-bottom: 2rem;
+    transition: color 0.12s;
+  }
+  .back-link:hover { color: var(--text); }
+
+  .article-header { margin-bottom: 1.5rem; }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 1rem;
+  }
+
+  .tag {
+    font-size: 0.69rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    border: 1px solid var(--border-hi);
+    border-radius: 4px;
+    padding: 3px 8px;
+    background: var(--bg-raised);
+  }
+
+  .article-title {
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--text);
+    line-height: 1.18;
+    margin-bottom: 0.9rem;
+  }
+
+  .article-desc {
+    font-size: 1.05rem;
+    color: var(--text-3);
+    line-height: 1.65;
+    margin-bottom: 1.25rem;
+  }
+
+  .byline {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .byline-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .byline-text {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .byline-name { font-weight: 500; color: var(--text-2); }
+  .byline-sep  { color: var(--text-4); }
+  .byline-meta { color: var(--text-3); }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.75rem 0 2rem;
+  }
+
+  /* YouTube embed */
+  .embed-wrap { margin-bottom: 2.5rem; }
+
+  .embed-ratio {
+    position: relative;
+    padding-bottom: 56.25%;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: #000;
+  }
+
+  .embed-frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  .embed-caption {
+    margin-top: 0.55rem;
+    font-size: 0.78rem;
+    color: var(--text-4);
+    text-align: center;
+  }
+
+  .embed-caption a {
+    color: var(--link);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .embed-caption a:hover { color: var(--link-hover); }
+
+  /* Featured image */
+  .featured-img-wrap {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin-bottom: 2.5rem;
+  }
+
+  .featured-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 16 / 8;
+    object-fit: cover;
+  }
+
+  /* Footer */
+  .article-footer {
+    margin-top: 3.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .yt-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    background: var(--link);
+    color: var(--bg);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    border-radius: 7px;
+    letter-spacing: -0.01em;
+  }
+  .yt-btn:hover { background: var(--link-hover); }
+
+  .yt-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ff3b3b;
+    flex-shrink: 0;
+  }
+</style>

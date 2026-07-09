@@ -1,16 +1,11 @@
 ---
 import { Image } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import { blogPageContent } from "../../config";
-import { render } from "astro:content";
 
 const posts = await getCollection("posts");
-posts.sort((a, b) => {
-  const dateA = new Date(a.data.pubDate).getTime();
-  const dateB = new Date(b.data.pubDate).getTime();
-  return dateB - dateA;
-});
+posts.sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
 for (const post of posts) {
   const { remarkPluginFrontmatter } = await render(post);
   post.data.readingTime = remarkPluginFrontmatter.minutesRead;
@@ -18,44 +13,163 @@ for (const post of posts) {
 ---
 
 <Layout seo={blogPageContent.seo}>
-  <section class="max-w-4xl mx-auto px-6 pt-20 pb-24">
-    <div class="mb-12">
-      <h1 class="font-bold text-4xl mb-2 text-gray-900 dark:text-gray-100">Blog</h1>
-      <p class="text-lg text-gray-600 dark:text-gray-400">{blogPageContent.subtitle}</p>
+  <section class="max-w-4xl mx-auto px-6 pt-16 pb-28">
+
+    <!-- Header -->
+    <div class="page-header mb-12">
+      <h1 class="page-title">Blog</h1>
+      <p class="page-sub">{blogPageContent.subtitle}</p>
     </div>
 
-    <div class="space-y-6">
-      {
-        posts.map((post) => (
-          <a
-            href={`/blog/${post.id}`}
-            class="group block border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden hover:border-gray-300 dark:hover:border-gray-700 transition-colors"
-          >
-            <div class="flex flex-col sm:flex-row">
-              <div class="relative overflow-hidden aspect-video sm:aspect-square sm:w-64 bg-secondary flex-shrink-0">
-                <Image
-                  src={post.data.image.url}
-                  alt={post.data.image.alt}
-                  width={400}
-                  height={400}
-                  class="w-full h-full object-cover"
-                />
-              </div>
-              <div class="p-6 flex-1 flex flex-col justify-center">
-                <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-500 mb-3">
-                  <time datetime={post.data.pubDate.toISOString()}>
-                    {post.data.pubDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                  </time>
-                  <span>·</span>
-                  <span>{post.data.readingTime}</span>
-                </div>
-                <h3 class="font-semibold text-xl mb-2 text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{post.data.title}</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{post.data.description}</p>
-              </div>
+    <!-- List -->
+    <div class="post-list">
+      {posts.map((post) => (
+        <a href={`/blog/${post.id}`} class="post-row group">
+          <!-- Thumbnail -->
+          <div class="thumb">
+            <Image
+              src={post.data.image.url}
+              alt={post.data.image.alt}
+              width={320}
+              height={180}
+              class="thumb-img"
+            />
+            {post.data.youtubeId && <span class="yt-chip">▶</span>}
+          </div>
+
+          <!-- Body -->
+          <div class="post-body">
+            <div class="post-meta">
+              <time>{post.data.pubDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</time>
+              {post.data.readingTime && <><span class="dot">·</span><span>{post.data.readingTime}</span></>}
             </div>
-          </a>
-        ))
-      }
+            <h2 class="post-title">{post.data.title}</h2>
+            <p class="post-desc">{post.data.description}</p>
+            <div class="read-more">Read post →</div>
+          </div>
+        </a>
+      ))}
     </div>
+
   </section>
 </Layout>
+
+<style>
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+  }
+
+  .page-sub {
+    font-size: 1rem;
+    color: var(--text-3);
+  }
+
+  /* List */
+  .post-list {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--border);
+  }
+
+  .post-row {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+
+  /* Thumbnail */
+  .thumb {
+    flex-shrink: 0;
+    width: 120px;
+    height: 72px;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--border);
+    background: var(--bg-raised);
+  }
+
+  @media (min-width: 480px) {
+    .thumb { width: 160px; height: 96px; }
+  }
+
+  .thumb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.25s ease;
+  }
+  .post-row:hover .thumb-img { transform: scale(1.04); }
+
+  .yt-chip {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: rgba(255,0,0,0.85);
+    color: #fff;
+  }
+
+  /* Body */
+  .post-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-3);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .dot { color: var(--text-4); }
+
+  .post-title {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    line-height: 1.35;
+    transition: color 0.12s;
+  }
+  .post-row:hover .post-title { color: var(--link); }
+
+  .post-desc {
+    font-size: 0.84rem;
+    color: var(--text-3);
+    line-height: 1.55;
+    display: none;
+  }
+
+  @media (min-width: 480px) {
+    .post-desc { display: block; }
+  }
+
+  .read-more {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-4);
+    margin-top: 0.25rem;
+    opacity: 0;
+    transition: opacity 0.12s;
+  }
+  .post-row:hover .read-more { opacity: 1; }
+</style>

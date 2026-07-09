@@ -3,61 +3,109 @@ import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import { aboutPageContent } from "../config";
 import SocialLinkBox from "../components/SocialLinkBox.astro";
-import {marked} from "marked"
+import { marked } from "marked";
 
-const pageDescription = marked.parse(aboutPageContent.about.description)
-const connectDescription = marked.parse(aboutPageContent.connect.description)
+const bio = await marked.parse(aboutPageContent.about.description);
+const connect = await marked.parse(aboutPageContent.connect.description);
 ---
 
 <Layout seo={aboutPageContent.seo}>
-  <section class="max-w-4xl mx-auto px-6 pt-20 pb-24">
-    <div class="mb-12">
-      <h1 class="font-bold text-4xl mb-2 text-gray-900 dark:text-gray-100">About</h1>
-      <p class="text-lg text-gray-600 dark:text-gray-400">{aboutPageContent.subtitle}</p>
+  <div class="max-w-3xl mx-auto px-6 pt-16 pb-28">
+
+    <div class="page-header mb-12">
+      <h1 class="page-title">About</h1>
+      <p class="page-sub">{aboutPageContent.subtitle}</p>
     </div>
 
-    <div class="prose prose-lg dark:prose-invert max-w-none mb-16
-      prose-p:leading-relaxed prose-p:mb-5
-      prose-strong:font-semibold prose-strong:text-current
-      prose-a:font-medium prose-a:no-underline hover:prose-a:underline
+    <div class="prose prose-base max-w-none mb-14
+      prose-headings:font-bold prose-headings:tracking-tight
+      prose-p:leading-relaxed prose-p:mb-4
+      prose-strong:font-semibold
+      prose-a:underline prose-a:underline-offset-2
       prose-ul:my-4 prose-li:my-1">
-      <Fragment set:html={pageDescription} />
+      <Fragment set:html={bio} />
     </div>
 
-    <div class="flex gap-4 mb-24">
-      <div class="flex-1">
+    <div class="images mb-16">
+      <div class="img-main">
         <Image
           src={aboutPageContent.about.image_l.url}
           alt={aboutPageContent.about.image_l.alt}
-          width={500}
-          height={350}
-          class="w-full h-auto object-cover rounded-lg border border-gray-200 dark:border-gray-800"
+          width={600}
+          height={380}
+          class="about-img"
         />
       </div>
-      <div class="w-1/3">
+      <div class="img-side">
         <Image
           src={aboutPageContent.about.image_r.url}
           alt={aboutPageContent.about.image_r.alt}
-          width={200}
-          height={350}
-          class="w-full h-auto object-cover rounded-lg border border-gray-200 dark:border-gray-800"
+          width={240}
+          height={380}
+          class="about-img"
         />
       </div>
     </div>
 
-    <div class="border-t border-gray-200 dark:border-gray-800 pt-12">
-      <h2 class="font-bold text-2xl mb-4 text-gray-900 dark:text-gray-100">Connect</h2>
-      <div class="prose prose-lg dark:prose-invert max-w-none mb-8
-        prose-p:leading-relaxed prose-p:text-gray-700 dark:prose-p:text-gray-300">
-        <Fragment set:html={connectDescription} />
+    <div class="connect-section">
+      <h2 class="connect-title">Connect</h2>
+      <div class="prose prose-base max-w-none mb-6 prose-p:leading-relaxed">
+        <Fragment set:html={connect} />
       </div>
-      <div class="grid grid-cols-2 gap-3">
-        {
-          aboutPageContent.connect.links.map((item) => (
-            <SocialLinkBox {...item} />
-          ))
-        }
+      <div class="connect-grid">
+        {aboutPageContent.connect.links.map(item => <SocialLinkBox {...item} />)}
       </div>
     </div>
-  </section>
+
+  </div>
 </Layout>
+
+<style>
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--text);
+    margin-bottom: 0.35rem;
+  }
+  .page-sub { font-size: 1rem; color: var(--text-3); }
+
+  .images {
+    display: flex;
+    gap: 0.75rem;
+  }
+  .img-main { flex: 1; }
+  .img-side  { width: 32%; }
+
+  .about-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    display: block;
+  }
+
+  .connect-section {
+    border-top: 1px solid var(--border);
+    padding-top: 2.5rem;
+  }
+
+  .connect-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .connect-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 480px) {
+    .connect-grid { grid-template-columns: 1fr; }
+  }
+</style>

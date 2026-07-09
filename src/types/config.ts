@@ -35,46 +35,18 @@ export type HomePageContent = {
   }[];
 };
 
-export type ResumeItem = {
-  title: string;
-  company: {
-    name: string;
-    image: string;
-    url: string;
-  };
-  date: string;
-};
-
 export type AboutPageContent = {
   seo: SEOInfo;
   subtitle: string;
   about: {
     description: string;
-    image_l: {
-      url: string;
-      alt: string;
-    };
-    image_r: {
-      url: string;
-      alt: string;
-    };
-  };
-  work?: {
-    description: string;
-    items: ResumeItem[];
+    image_l: { url: string; alt: string };
+    image_r: { url: string; alt: string };
   };
   connect: {
     description: string;
     links: SocialLink[];
   };
-};
-
-export type Project = {
-  title: string;
-  description: string;
-  image: string;
-  year: string;
-  url: string;
 };
 
 export type BlogPageContent = {

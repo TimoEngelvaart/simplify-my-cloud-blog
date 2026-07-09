@@ -1,138 +1,318 @@
 ---
 import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
-import { homePageContent, Logo } from "../config";
+import { homePageContent, author } from "../config";
 import SocialLink from "../components/SocialLink.astro";
-import Link from "../components/Link.astro";
 import { getCollection } from "astro:content";
 
 const posts = await getCollection("posts");
-posts.sort((a, b) => {
-  const dateA = new Date(a.data.pubDate).getTime();
-  const dateB = new Date(b.data.pubDate).getTime();
-  return dateB - dateA;
-});
-posts.splice(2)
+posts.sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+posts.splice(4);
 ---
 
 <Layout seo={homePageContent.seo}>
-  <!-- Hero Section -->
-  <section class="max-w-4xl mx-auto px-6 pt-24 pb-20">
-    <div class="flex flex-col lg:flex-row items-center gap-16">
-      <!-- Profile Image -->
-      <div class="flex-shrink-0">
-        <div class="relative">
+
+  <!-- ── Hero ── -->
+  <section class="hero-section">
+    <div class="max-w-4xl mx-auto px-6 py-20 sm:py-28">
+      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-10">
+
+        <!-- Photo -->
+        <div class="flex-shrink-0">
           <Image
-            src={Logo.logo}
-            alt={Logo.name}
-            width={180}
-            height={180}
-            class="rounded-full w-[180px] h-[180px] object-cover ring-2 ring-gray-200 dark:ring-gray-700 shadow-xl relative"
+            src={author.avatar}
+            alt={author.name}
+            width={160}
+            height={160}
+            class="photo"
           />
         </div>
-      </div>
 
-      <!-- Hero Content -->
-      <div class="flex-1 text-center lg:text-left max-w-2xl">
-        <div class="inline-block mb-4">
-          <span class="text-sm font-medium px-4 py-2 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-900 dark:text-primary-300 border border-primary-200 dark:border-primary-800">
-            {homePageContent.role}
-          </span>
-        </div>
-        <h1 class="font-bold text-5xl md:text-6xl mb-6 leading-tight text-gray-900 dark:text-gray-100">
-          {Logo.name}
-        </h1>
-        <p class="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-          {homePageContent.description}
-        </p>
+        <!-- Copy -->
+        <div class="flex-1 text-center sm:text-left">
+          <div class="role-badge mb-4">{homePageContent.role}</div>
 
-        <!-- CTA Buttons -->
-        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 mb-8">
-          {
-            homePageContent.links.map((link) => (
+          <h1 class="hero-title mb-4">Simplify My Cloud</h1>
+
+          <p class="hero-sub mb-7">{homePageContent.description}</p>
+
+          <!-- CTAs -->
+          <div class="flex flex-wrap gap-3 justify-center sm:justify-start mb-6">
+            {homePageContent.links.map((link, i) => (
               <a
                 href={link.url}
-                class="px-6 py-3 rounded-lg bg-primary-600 hover:bg-primary-700 text-white font-medium text-sm shadow-sm hover:shadow-md transition-all"
+                target={link.external ? "_blank" : "_self"}
+                rel={link.external ? "noopener noreferrer" : undefined}
+                class={i === 0 ? "btn-primary" : "btn-ghost"}
               >
+                {i === 0 && <span class="yt-dot" />}
                 {link.title}
               </a>
-            ))
-          }
-          <a
-            href="/blog"
-            class="px-6 py-3 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
-          >
-            Read Blog
-          </a>
-        </div>
+            ))}
+          </div>
 
-        <!-- Social Links -->
-        <div class="flex items-center justify-center lg:justify-start gap-4">
-          {
-            homePageContent.socialLinks.map((link) => (
-              <SocialLink
-                title={link.title}
-                url={link.url}
-                icon={link.icon}
-                external={link.external}
-              />
-            ))
-          }
+          <!-- Social links -->
+          <div class="flex items-center gap-4 justify-center sm:justify-start mb-6">
+            {homePageContent.socialLinks.map((link, i) => (
+              <>
+                {i > 0 && <span class="social-sep">·</span>}
+                <SocialLink
+                  title={link.title}
+                  url={link.url}
+                  icon={link.icon}
+                  external={link.external}
+                />
+              </>
+            ))}
+          </div>
+
+          <!-- Topics -->
+          <div class="flex flex-wrap gap-2 justify-center sm:justify-start">
+            {["Azure", "Power Platform", "Power Apps", "Power Automate", "AI"].map(t => (
+              <span class="topic-pill">{t}</span>
+            ))}
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Latest Posts Section -->
-  <section class="max-w-4xl mx-auto px-6 py-20 border-t border-gray-200 dark:border-gray-800">
-    <div class="flex items-center justify-between mb-10">
-      <div>
-        <h2 class="font-bold text-3xl mb-2 text-gray-900 dark:text-gray-100">Latest Posts</h2>
-        <p class="text-sm text-gray-600 dark:text-gray-400">Recent insights and guides</p>
-      </div>
-      <a
-        href="/blog"
-        class="hidden sm:inline-flex items-center gap-1 text-sm font-medium text-primary-600 dark:text-primary-400 hover:gap-2 transition-all"
-      >
-        View all →
-      </a>
+  <!-- ── Posts ── -->
+  <section class="max-w-4xl mx-auto px-6 pb-24">
+    <div class="section-header mb-6">
+      <h2 class="section-label">Latest posts</h2>
+      <a href="/blog" class="see-all">View all →</a>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {
-        posts.map((post) => (
-          <a
-            href={`/blog/${post.id}`}
-            class="group block border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden hover:border-primary-500 dark:hover:border-primary-500 transition-all hover:shadow-lg"
-          >
-            <div class="relative overflow-hidden aspect-video bg-gray-100 dark:bg-gray-800">
-              <Image
-                src={post.data.image.url}
-                alt={post.data.image.alt}
-                width={600}
-                height={400}
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-            <div class="p-5">
-              <p class="text-xs text-gray-500 dark:text-gray-500 mb-2 font-medium">
-                {post.data.pubDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-              </p>
-              <h3 class="font-semibold text-lg mb-2 text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">{post.data.title}</h3>
-              <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-2">{post.data.description}</p>
-            </div>
-          </a>
-        ))
-      }
-    </div>
-
-    <div class="text-center sm:hidden mt-8">
-      <a
-        href="/blog"
-        class="inline-flex items-center gap-1 text-sm font-medium opacity-60 hover:opacity-100 transition-opacity"
-      >
-        View all →
-      </a>
+    <div class="posts-grid">
+      {posts.map((post, i) => (
+        <a href={`/blog/${post.id}`} class={`post-card ${i === 0 ? "post-card--featured" : ""}`}>
+          <div class="post-card__img">
+            <Image
+              src={post.data.image.url}
+              alt={post.data.image.alt}
+              width={i === 0 ? 800 : 400}
+              height={i === 0 ? 420 : 220}
+              class="post-img"
+            />
+            {post.data.youtubeId && <span class="yt-badge">▶ Video</span>}
+          </div>
+          <div class="post-card__body">
+            <time class="post-date">
+              {post.data.pubDate.toLocaleDateString("en-US", {
+                month: "short", day: "numeric", year: "numeric",
+              })}
+            </time>
+            <h3 class="post-title">{post.data.title}</h3>
+            <p class="post-desc">{post.data.description}</p>
+          </div>
+        </a>
+      ))}
     </div>
   </section>
+
 </Layout>
+
+<style>
+  /* ── Hero ── */
+  .hero-section { border-bottom: 1px solid var(--border); }
+
+  .photo {
+    width: 148px;
+    height: 148px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border);
+    display: block;
+  }
+
+  .role-badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--link);
+  }
+
+  .hero-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  .hero-sub {
+    font-size: 1rem;
+    color: var(--text-2);
+    line-height: 1.65;
+    max-width: 520px;
+  }
+
+  /* ── Buttons ── */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    background: var(--link);
+    color: var(--bg);         /* dark navy on cyan in dark mode = high contrast */
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 8px;
+    letter-spacing: -0.01em;
+  }
+  .btn-primary:hover { background: var(--link-hover); }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 8px;
+    letter-spacing: -0.01em;
+  }
+  .btn-ghost:hover { border-color: var(--link); color: var(--link); }
+
+  .yt-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff3b3b;
+    flex-shrink: 0;
+  }
+
+  .social-sep {
+    color: var(--text-4);
+    font-size: 0.75rem;
+    user-select: none;
+  }
+
+  .topic-pill {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-3);
+    border: 1px solid var(--border-hi);
+    border-radius: 4px;
+    padding: 3px 9px;
+    background: var(--bg-raised);
+  }
+
+  /* ── Section header ── */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-top: 2.5rem;
+  }
+  .section-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+  .see-all {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-3);
+    transition: color 0.12s;
+  }
+  .see-all:hover { color: var(--text); }
+
+  /* ── Posts grid ── */
+  .posts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  @media (min-width: 640px) {
+    .posts-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .post-card--featured {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .post-card {
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    transition: background 0.12s;
+  }
+  .post-card:hover { background: var(--bg-subtle); }
+
+  .post-card__img {
+    position: relative;
+    overflow: hidden;
+  }
+  .post-card--featured .post-card__img { aspect-ratio: 16 / 7; }
+  .post-card:not(.post-card--featured) .post-card__img { aspect-ratio: 16 / 9; }
+
+  .post-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+  .post-card:hover .post-img { transform: scale(1.02); }
+
+  .yt-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 0.69rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.72);
+    color: #fff;
+    backdrop-filter: blur(4px);
+    letter-spacing: 0.02em;
+  }
+
+  .post-card__body {
+    padding: 1.25rem 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .post-card--featured .post-card__body { padding: 1.25rem 1.75rem; }
+
+  .post-date {
+    font-size: 0.71rem;
+    font-weight: 500;
+    color: var(--text-3);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .post-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1.35;
+  }
+  .post-card--featured .post-title { font-size: 1.2rem; }
+
+  .post-desc {
+    font-size: 0.84rem;
+    color: var(--text-3);
+    line-height: 1.55;
+  }
+  .post-card--featured .post-desc { font-size: 0.9rem; }
+</style>

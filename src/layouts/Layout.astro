@@ -157,11 +157,11 @@ const { seo } = Astro.props;
     --text-4:      #8090c0;
     --link:        #0b5cc8;   /* accessible blue on white */
     --link-hover:  #0848a8;
-    --nav-bg:      #0d1442;
-    --nav-text:    rgba(180,200,255,0.65);
-    --nav-text-hi: #ffffff;
-    --nav-hover:   rgba(255,255,255,0.08);
-    --nav-border:  rgba(255,255,255,0.09);
+    --nav-bg:      #ffffff;
+    --nav-text:    #4a5a99;
+    --nav-text-hi: #070c27;
+    --nav-hover:   rgba(7,12,39,0.05);
+    --nav-border:  #cdd5f0;
   }
 
   [data-theme="dark"] {
@@ -231,10 +231,9 @@ const { seo } = Astro.props;
   [data-theme="dark"] .logo-dark  { display: block; }
   [data-theme="dark"] .logo-light { display: none; }
 
-  /* Nav logos always shown on dark bg → invert light variant */
-  .nav    .logo-light { filter: brightness(0) invert(1) opacity(0.9); }
+  /* Dark nav/footer always needs white logo */
   .footer .logo-light { filter: brightness(0) invert(1) opacity(0.7); }
-  [data-theme="dark"] .nav    .logo-light { filter: none; }
+  [data-theme="dark"] .nav    .logo-light { filter: brightness(0) invert(1) opacity(0.9); }
   [data-theme="dark"] .footer .logo-light { filter: none; }
 
   /* ─── Footer ─── */

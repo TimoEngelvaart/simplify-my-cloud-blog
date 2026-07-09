@@ -53,3 +53,18 @@ export type BlogPageContent = {
   seo: SEOInfo;
   subtitle: string;
 };
+
+// Kept for unused legacy components (ProjectCard.astro, ResumeItem.astro)
+export type ResumeItem = {
+  title: string;
+  company: { name: string; image: string; url: string };
+  date: string;
+};
+
+export type Project = {
+  title: string;
+  description: string;
+  image: string;
+  year: string;
+  url: string;
+};

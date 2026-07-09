@@ -2,7 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import { getCollection, getEntry, render } from "astro:content";
 import { Image } from "astro:assets";
-import { identity, author } from "../../config";
+import { author } from "../../config";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
